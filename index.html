@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="robots" content="noindex,nofollow">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>キネコ国際映画祭 ボランティア説明会 回答まとめ</title>
+<title>8/28 ティーンズ作品PRアンケート回答まとめ・名簿</title>
 <style>
 :root{
   --bg:#faf7f2; --panel:#ffffff; --ink:#1f1b16; --muted:#7a7168; --line:#e7ded1;
@@ -225,7 +225,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-si
 <div class="wrap">
 
 <header class="top">
-  <h1>キネコ国際映画祭 ボランティア説明会・回答まとめ
+  <h1>8/28 ティーンズ作品PRアンケート回答まとめ・名簿
     <small id="meta">—</small>
   </h1>
   <div class="toolbar">
@@ -607,7 +607,7 @@ function renderCat(){
       const rk=[...cnt.entries()].sort((a,b)=>b[1]-a[1]);
       const mx=rk.length?rk[0][1]:1;
       sources=`<div class="box src">
-        <div class="box-h">📍 いま、どこで情報を知っているか <span class="n">${list.length}名が回答</span></div>
+        <div class="box-h">📍 どこで情報を得ているか <span class="n">${list.length}名が回答</span></div>
         <p class="box-lead">設問１への回答を集計したもの。<b>これは「現状」であって提案ではありません</b>。どの媒体に出せば届くかの土台になります。</p>
         <div class="bars">${rk.map(([n,c])=>`<div class="bar plain">
           <span class="bl">${esc(n)}</span>
@@ -688,7 +688,7 @@ document.getElementById('btn-csv').onclick=()=>{
   }));
   const a=document.createElement('a');
   a.href=URL.createObjectURL(new Blob([out],{type:'text/csv'}));
-  a.download='キネコ_出席リスト.csv'; a.click();
+  a.download='8-28ティーンズPR_名簿.csv'; a.click();
 };
 const drop=document.getElementById('drop'), fi=document.getElementById('file');
 document.getElementById('btn-pick').onclick=()=>fi.click();
