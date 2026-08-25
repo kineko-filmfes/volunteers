@@ -184,6 +184,29 @@ details.raw summary:hover{color:var(--accent)}
 button.more{font-size:11.5px;padding:2px 10px;margin-top:5px;box-shadow:none;color:var(--muted)}
 .also{margin-top:6px;display:flex;align-items:center;flex-wrap:wrap;gap:0}
 .also-l{font-size:10.5px;font-weight:800;color:var(--muted);margin-right:6px}
+
+/* --- スマホ: 出席リストをカード表示に --- */
+@media(max-width:640px){
+  .tbl-scroll{overflow-x:visible}
+  .tbl-scroll table{display:block;border:none;background:none;box-shadow:none;border-radius:0}
+  .tbl-scroll thead{display:none}
+  .tbl-scroll tbody{display:block}
+  .tbl-scroll tr{display:grid;grid-template-columns:22px minmax(0,1fr) auto;gap:1px 9px;
+    background:var(--panel);border:1px solid var(--line);border-radius:11px;
+    padding:10px 13px;margin-bottom:7px;box-shadow:var(--shadow)}
+  .tbl-scroll td{display:block;border:none;padding:0}
+  .tbl-scroll td.num{grid-column:1;grid-row:1/3;width:auto;font-size:11.5px;padding-top:3px}
+  .tbl-scroll td.nm{grid-column:2;grid-row:1;font-size:15px}
+  .tbl-scroll td:nth-child(3){grid-column:2;grid-row:2;font-size:12px;color:var(--muted)}
+  .tbl-scroll td:nth-child(4){grid-column:3;grid-row:2;font-size:12px;text-align:right}
+  .tbl-scroll td:nth-child(5){grid-column:3;grid-row:1;text-align:right}
+  .tbl-scroll td.contact-col{grid-column:2/4;font-size:12px}
+  h2{font-size:16px;align-items:flex-start}
+  .wrap{padding:20px 14px 60px}
+  h1{font-size:20px}
+  .stats{grid-template-columns:1fr 1fr}
+  .v-q{margin-left:0;text-align:left;flex-basis:100%}
+}
 footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);line-height:1.8}
 @media print{
   #drop,nav.tabs,.toolbar,input[type=search],.filters,button.more{display:none!important}
