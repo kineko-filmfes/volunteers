@@ -135,6 +135,78 @@ input[type=search]{
 }
 .warn{font-size:12.5px;background:var(--amber-soft);color:var(--amber);border-radius:10px;padding:9px 13px;margin-bottom:14px;font-weight:600}
 
+/* --- 冒頭サマリー（ベントーUI） --- */
+:root{ --c-k:#dd5a2f; --c-z:#3178b8; --c-x:#94897c; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --c-k:#e8663a; --c-z:#4f9cd8; --c-x:#7f766c; } }
+.bento{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:8px}
+.bt-card{background:var(--panel);border:1px solid var(--line);border-radius:18px;
+  padding:16px 18px;box-shadow:var(--shadow);text-align:left;font:inherit;color:var(--ink)}
+.bt-h{font-size:13px;font-weight:800;margin-bottom:11px;line-height:1.45}
+.bt-s{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:2px}
+.b-seats{grid-column:span 3;grid-row:span 2}
+.b-todo{grid-column:span 1;background:var(--accent);border-color:var(--accent);color:#fff;cursor:pointer;transition:.15s;
+  display:flex;flex-direction:column;justify-content:center}
+.b-todo:hover{transform:translateY(-2px)}
+.b-todo .bt-h,.b-todo .bt-s{color:#fff;opacity:.92}
+.bt-num{font-size:52px;font-weight:800;line-height:1;letter-spacing:-.03em;margin:0}
+.b-ratio{grid-column:span 1}
+.b-fill{grid-column:span 2}
+.b-top{grid-column:span 2}
+
+/* 座席表 */
+.seats{display:flex;flex-direction:column;gap:12px}
+.seat-row{display:grid;grid-template-columns:112px 1fr;gap:12px;align-items:center}
+.seat-lb{font-size:11.5px;color:var(--muted);font-weight:700;text-align:right;line-height:1.3}
+.seat-lb b{display:inline-block;margin-left:5px;color:var(--ink);font-size:12.5px}
+.seat-set{display:flex;flex-wrap:wrap;gap:5px}
+.seat{width:22px;height:19px;border-radius:5px 5px 8px 8px;display:block;flex:0 0 auto}
+.seat.s-k{background:var(--c-k)}
+.seat.s-z{background:var(--c-z)}
+.seat.s-x{background:none;border:1.5px dashed var(--c-x);opacity:.7}
+.seat.s-u{background:none;border:1.5px solid var(--line)}
+.seat-lg{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;padding-top:11px;
+  border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);font-weight:700}
+.seat-lg span{display:flex;align-items:center;gap:6px}
+.sw{width:13px;height:12px;border-radius:3px 3px 5px 5px;display:inline-block;flex:0 0 auto}
+.sw.s-k{background:var(--c-k)} .sw.s-z{background:var(--c-z)}
+.sw.s-x{background:none;border:1.5px dashed var(--c-x)}
+
+/* 割合バー */
+.rbar{display:flex;gap:2px;height:13px;margin-bottom:13px}
+.rbar i{border-radius:3px;display:block}
+.rb-k{background:var(--c-k)} .rb-z{background:var(--c-z)}
+.rb-x{background:none;border:1.5px dashed var(--c-x)}
+.rl{display:flex;align-items:center;gap:7px;font-size:12px;margin-bottom:5px}
+.rl-n{color:var(--muted);flex:1;font-size:11.5px}
+.rl b{font-weight:800;font-variant-numeric:tabular-nums}
+.rl-p{font-size:10.5px;color:var(--muted);width:32px;text-align:right}
+
+/* 記入率・アイデア上位 */
+.fr{display:grid;grid-template-columns:minmax(74px,auto) 1fr auto;gap:10px;align-items:center;
+  margin-bottom:6px;width:100%;background:none;border:none;box-shadow:none;padding:2px 4px;border-radius:7px}
+.fr.jump{cursor:pointer} .fr.jump:hover{background:var(--bg)}
+.fr-l{font-size:11.5px;font-weight:700;color:var(--ink);text-align:left;line-height:1.35}
+.fr-t{background:var(--bg);border:1px solid var(--line);border-radius:999px;height:9px;overflow:hidden}
+.fr-t i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.fr-n{font-size:11px;color:var(--muted);font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums}
+.fr-n em{font-style:normal;margin-left:7px;opacity:.75}
+
+@media(max-width:820px){
+  .bento{grid-template-columns:repeat(2,1fr)}
+  .b-seats{grid-column:span 2;grid-row:auto}
+  .b-fill,.b-top{grid-column:span 2}
+  .seat-row{grid-template-columns:84px 1fr;gap:8px}
+  .seat-lb{font-size:10.5px}
+}
+@media(max-width:520px){
+  .bento{grid-template-columns:1fr}
+  .b-seats,.b-todo,.b-ratio,.b-fill,.b-top{grid-column:span 1}
+}
+@media print{ .b-todo{background:none!important;color:var(--ink)!important;border-color:var(--line)!important}
+  .b-todo .bt-h,.b-todo .bt-s{color:var(--ink)!important}
+  .seat,.sw,.rbar i,.fr-t i{-webkit-print-color-adjust:exact;print-color-adjust:exact} }
+
 /* --- 自由記述タブ --- */
 .filters{display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin-bottom:18px}
 .f-l{font-size:12px;font-weight:700;color:var(--muted);margin-right:2px}
@@ -239,17 +311,13 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-si
 <div id="drop">
   <div class="d-text">
     <div class="d-title">📄 新しい回答を反映する</div>
-    <div class="d-sub">
-      Formzuの管理画面 → <b>回答ログ</b> → <b>CSVダウンロード</b>。<br>
-      落としたCSVファイルを、このグレーの枠の中に<b>ドラッグ＆ドロップ</b>するだけで、下の集計がぜんぶ作り直されます。<br>
-      （インストール不要・ネット接続不要。元のファイルは書き換わりません）
-    </div>
+    <div class="d-sub">Formzuの管理画面 → 回答ログ → CSVダウンロード。<br>落としたCSVをこの枠に<b>ドラッグ＆ドロップ</b></div>
   </div>
   <button class="primary" id="btn-pick">CSVファイルを選ぶ</button>
   <input type="file" id="file" accept=".csv,text/csv" hidden>
 </div>
 
-<div class="stats" id="stats"></div>
+<div id="summary"></div>
 
 <nav class="tabs" id="tabs">
   <button data-p="p-list" class="on">出席リスト</button>
@@ -448,7 +516,7 @@ function render(model,label){
   M=model;
   const P=model.people;
   document.getElementById('meta').textContent =
-    `全${P.length}件 ／ 最終回答 ${P.length?P[P.length-1].date:'—'} ／ 読み込み元: ${label}`;
+    `全${P.length}件 ／ 最終回答 ${(P.length?P[P.length-1].date:'—').slice(0,16)}`;
 
   const g={k:[],z:[],x:[],u:[]};
   P.forEach(p=>g[joinKind(p.join)].push(p));
@@ -456,12 +524,7 @@ function render(model,label){
   P.forEach(p=>{ const a=p.age||'未回答'; ages[a]=(ages[a]||0)+1; });
   const todoCount=P.reduce((s,p)=>s+todosOf(p).length,0);
 
-  document.getElementById('stats').innerHTML = `
-    <div class="stat a"><div class="n">${g.k.length}</div><div class="l">来社（カイクラフト本社）</div></div>
-    <div class="stat t"><div class="n">${g.z.length}</div><div class="l">Zoom参加</div></div>
-    <div class="stat m"><div class="n">${g.x.length}</div><div class="l">参加不可</div></div>
-    <div class="stat"><div class="n">${P.length}</div><div class="l">回答総数</div></div>
-    <div class="stat"><div class="n">${todoCount}</div><div class="l">要対応</div></div>`;
+  renderSummary(P);
 
   /* --- 出席リスト --- */
   const tbl=(list,cls)=>{
@@ -481,13 +544,11 @@ function render(model,label){
   };
   const ageLine=Object.entries(ages).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${k} ${v}名`).join(' ／ ');
   document.getElementById('p-list').innerHTML = `
-    <div class="warn">年代の内訳（全回答）: ${esc(ageLine)}</div>
     <h2>🏢 来社（新宿三丁目・カイクラフト本社） <span class="cnt">${g.k.length}名</span></h2>
     ${tbl(g.k)}
     <h2>💻 Zoom（顔出し・スピーカー参加必須） <span class="cnt">${g.z.length}名</span></h2>
     ${tbl(g.z)}
     <h2>🕒 参加不可（説明会は欠席） <span class="cnt">${g.x.length}名</span></h2>
-    <p class="hint">説明会は欠席でも、アンケートには答えてくれている方が多いです。資料の後日共有先としてこのリストを使えます。</p>
     ${tbl(g.x)}
     ${g.u.length?`<h2>❓ 参加方法 未回答 <span class="cnt">${g.u.length}名</span></h2>${tbl(g.u)}`:''}`;
 
@@ -505,8 +566,7 @@ function render(model,label){
   const todos=[];
   P.forEach(p=>todosOf(p).forEach(t=>todos.push({p,t})));
   document.getElementById('p-todo').innerHTML = todos.length
-    ? `<p class="hint">回答の中から、運営側が返事・確認をした方がよさそうなものを自動で拾っています。</p>` +
-      todos.map(({p,t})=>`<div class="todo">
+    ? todos.map(({p,t})=>`<div class="todo">
         <div class="t-h">${esc(t.kind)}</div>
         <div class="t-who">${esc(p.name)}（${esc(p.kana||'—')}）・${esc(p.age||'—')}・${JOIN_LABEL[joinKind(p.join)]}</div>
         <div class="t-txt">${nl(t.text)}</div>
@@ -608,7 +668,7 @@ function renderCat(){
       const mx=rk.length?rk[0][1]:1;
       sources=`<div class="box src">
         <div class="box-h">📍 どこで情報を得ているか <span class="n">${list.length}名が回答</span></div>
-        <p class="box-lead">設問１への回答を集計したもの。<b>これは「現状」であって提案ではありません</b>。どの媒体に出せば届くかの土台になります。</p>
+        <p class="box-lead">設問１の回答。<b>現状であって提案ではありません</b></p>
         <div class="bars">${rk.map(([n,c])=>`<div class="bar plain">
           <span class="bl">${esc(n)}</span>
           <span class="bt"><i style="width:${Math.round(c/mx*100)}%"></i></span>
@@ -626,7 +686,6 @@ function renderCat(){
     const list=P.map(p=>({p,a:p.answers.find(a=>a.label===infQ.label)})).filter(x=>x.a);
     if(list.length) names=`<div class="box hi">
       <div class="box-h">🎤 名前が挙がった人・作品 <span class="n">${list.length}名が回答</span></div>
-      <p class="box-lead">設問４（人気のインフルエンサー・有名人）への回答。ゲスト交渉やPR起用を考えるときの一次情報です。</p>
       ${list.map(x=>`<div class="nm-row"><b>${esc(x.p.name)}</b><span class="fu">${esc(x.p.age||'—')}</span><span class="nm-t">${nl(x.a.text)}</span></div>`).join('')}
     </div>`;
   }
@@ -636,7 +695,6 @@ function renderCat(){
       .map(([w,n])=>`<span class="tag w">${esc(w)}<b>${n}</b></span>`).join('');
     return `<div class="cat c${i%4}" id="c-${b.cat.key}">
       <div class="cat-h"><h3>${esc(b.cat.title)}</h3><span class="n">${b.voices.length}件・${b.people.size}名</span></div>
-      <p class="cat-lead">${esc(b.cat.lead)}</p>
       ${words?`<div class="words"><span class="w-l">出てきた言葉</span>${words}</div>`:''}
       ${b.voices.map(voice).join('')}
     </div>`;
@@ -648,13 +706,105 @@ function renderCat(){
     ${sources}
     <div class="box"><div class="box-h">💡 どんなアイデアが多く出たか</div>
       <div class="bars">${bars}</div>
-      <p class="box-lead" style="margin:12px 0 0">設問２〜５と自由記述の<b>アイデア</b>を分類したものです。1つの回答は、いちばん近いテーマ<b>1つだけ</b>に置いています（重複して数えていません）。他のテーマにもまたがる回答は、本文の下にタグを付けています。バーを押すとそのテーマへ飛びます。</p>
+      <p class="box-lead" style="margin:12px 0 0">設問２〜５と自由記述。1つの回答は近いテーマ<b>1つだけ</b>に置いています</p>
     </div>
     ${names}
     ${cards}
     ${other.length?`<div class="cat"><div class="cat-h"><h3>その他・分類なし</h3><span class="n">${other.length}件</span></div>
-      <p class="cat-lead">キーワードでは分類できなかった回答です。目視で確認してください。</p>
       ${other.map(voice).join('')}</div>`:''}`;
+}
+
+/* ============ 冒頭サマリー（ベントーUI） ============ */
+function rankAge(a){
+  if(/中学/.test(a)) return 13;
+  if(/高校/.test(a)) return 16;
+  if(/大学|予備校|専門/.test(a)) return 19;
+  const m=a.match(/(\d+)/); return m?+m[1]:99;
+}
+function renderSummary(P){
+  const g={k:[],z:[],x:[],u:[]}; P.forEach(p=>g[joinKind(p.join)].push(p));
+  const ages=[...new Set(P.map(p=>p.age||'未回答'))].sort((a,b)=>rankAge(a)-rankAge(b));
+  const srcQ=M.free.find(f=>/どこから|知ることが多い|情報を知る/.test(f.label));
+  const todo=P.reduce((s,p)=>s+todosOf(p).length,0);
+  const N=P.length||1;
+
+  /* 座席表 */
+  const order='kzxu';
+  const seats=ages.map(a=>{
+    const list=P.filter(p=>(p.age||'未回答')===a)
+      .sort((x,y)=>order.indexOf(joinKind(x.join))-order.indexOf(joinKind(y.join)));
+    return `<div class="seat-row">
+      <span class="seat-lb">${esc(a)}<b>${list.length}</b></span>
+      <span class="seat-set">${list.map(p=>{const k=joinKind(p.join);
+        return `<i class="seat s-${k}" title="${esc(p.name)}／${JOIN_LABEL[k]}"></i>`;}).join('')}</span>
+    </div>`;
+  }).join('');
+
+  /* 参加比率 */
+  const seg=['k','z','x'].filter(k=>g[k].length).map(k=>
+    `<i class="rb-${k}" style="flex:${g[k].length}" title="${JOIN_LABEL[k]} ${g[k].length}名"></i>`).join('');
+  const legend=['k','z','x'].map(k=>`<div class="rl">
+      <i class="sw s-${k}"></i><span class="rl-n">${JOIN_LABEL[k]}</span>
+      <b>${g[k].length}</b><span class="rl-p">${Math.round(g[k].length/N*100)}%</span></div>`).join('');
+
+  /* 記入率 */
+  const fill=ages.map(a=>{
+    const list=P.filter(p=>(p.age||'未回答')===a);
+    const wrote=list.filter(p=>p.answers.length);
+    const chars=wrote.length?Math.round(wrote.reduce((s,p)=>s+p.answers.reduce((t,x)=>t+x.text.length,0),0)/wrote.length):0;
+    return {a,n:list.length,w:wrote.length,chars,pct:list.length?Math.round(wrote.length/list.length*100):0};
+  });
+  const fillRows=fill.map(f=>`<div class="fr">
+      <span class="fr-l">${esc(f.a)}</span>
+      <span class="fr-t"><i style="width:${f.pct}%"></i></span>
+      <span class="fr-n">${f.w}/${f.n}名<em>${f.chars}字</em></span></div>`).join('');
+
+  /* アイデア上位 */
+  const cnt=new Map();
+  P.forEach(p=>p.answers.forEach(x=>{
+    if(srcQ&&x.label===srcQ.label) return;
+    const m=matchOf(x.text); if(m.length) cnt.set(m[0].cat,(cnt.get(m[0].cat)||0)+1);
+  }));
+  const top=[...cnt.entries()].sort((a,b)=>b[1]-a[1]).slice(0,4);
+  const tmax=top.length?top[0][1]:1;
+  const topRows=top.map(([c,n])=>`<button class="fr jump" data-goto="${c.key}">
+      <span class="fr-l">${esc(c.title)}</span>
+      <span class="fr-t"><i style="width:${Math.round(n/tmax*100)}%"></i></span>
+      <span class="fr-n">${n}件</span></button>`).join('');
+
+  document.getElementById('summary').innerHTML=`
+    <div class="bento">
+      <div class="bt-card b-seats">
+        <div class="bt-h">回答した${N}名の内訳</div>
+        <div class="seats">${seats}</div>
+        <div class="seat-lg">
+          <span><i class="sw s-k"></i>来社 ${g.k.length}</span>
+          <span><i class="sw s-z"></i>Zoom ${g.z.length}</span>
+          <span><i class="sw s-x"></i>参加不可 ${g.x.length}</span>
+        </div>
+      </div>
+
+      <button class="bt-card b-todo" data-tab="p-todo">
+        <div class="bt-h">要対応</div>
+        <div class="bt-num">${todo}</div>
+      </button>
+
+      <div class="bt-card b-ratio">
+        <div class="bt-h">参加の割合</div>
+        <div class="rbar">${seg}</div>
+        ${legend}
+      </div>
+
+      <div class="bt-card b-fill">
+        <div class="bt-h">年代別の記入率と文字数</div>
+        ${fillRows}
+      </div>
+
+      <div class="bt-card b-top">
+        <div class="bt-h">多く出たアイデア</div>
+        ${topRows||'<p class="fr-l">まだアイデアの回答がありません</p>'}
+      </div>
+    </div>`;
 }
 
 /* ============ 操作 ============ */
@@ -669,6 +819,17 @@ document.addEventListener('click',e=>{
   if(more){ const t=more.previousElementSibling;
             t.classList.toggle('clip');
             more.textContent = t.classList.contains('clip')?'続きを読む':'とじる'; return; }
+});
+
+
+document.addEventListener('click',e=>{
+  const tb=e.target.closest('[data-tab]');
+  if(tb){ document.querySelector(`#tabs [data-p="${tb.dataset.tab}"]`).click(); return; }
+  const gt=e.target.closest('[data-goto]');
+  if(gt){ document.querySelector('#tabs [data-p="p-cat"]').click();
+          const el=document.getElementById('c-'+gt.dataset.goto);
+          if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+          return; }
 });
 
 document.getElementById('tabs').addEventListener('click',e=>{
