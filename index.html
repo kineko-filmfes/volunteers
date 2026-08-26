@@ -728,7 +728,7 @@ function renderCat(){
       const chips=[...tally.entries()].sort((a,b)=>b[1].size-a[1].size)
         .map(([w,who])=>`<span class="nchip" title="${esc([...who].join('、'))}">${esc(w)}${who.size>1?`<b>${who.size}</b>`:''}</span>`).join('');
       names=`<div class="box hi">
-        <div class="box-h">🎤 挙がった名前 <span class="n">${tally.size}件</span></div>
+        <div class="box-h">🎤 出てきた有名人・作品 <span class="n">${tally.size}件</span></div>
         <div class="nchips">${chips||'<span class="nchip off">まだありません</span>'}</div>
         ${rows.map(x=>`<div class="nm-row">
           <b>${esc(x.p.name)}</b>
