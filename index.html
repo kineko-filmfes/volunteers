@@ -239,6 +239,11 @@ details.raw summary::-webkit-details-marker{display:none}
 details.raw summary::before{content:'▸ ';}
 details.raw[open] summary::before{content:'▾ ';}
 details.raw summary:hover{color:var(--accent)}
+.nchips{display:flex;flex-wrap:wrap;gap:7px;margin:0 0 16px}
+.nchip{font-size:13.5px;font-weight:700;padding:5px 13px;border-radius:999px;
+  background:var(--violet-soft);color:var(--violet);border:1px solid transparent;white-space:nowrap}
+.nchip b{margin-left:6px;font-size:11px;opacity:.7}
+.nchip.off{background:var(--bg);color:var(--muted);font-weight:500}
 .nm-row{display:grid;grid-template-columns:auto auto 1fr;gap:10px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line)}
 .nm-row b{font-size:13px}
 .nm-row .fu{font-size:11.5px;color:var(--muted);white-space:nowrap}
@@ -480,6 +485,34 @@ const SRCS=[['Instagram',/instagram|インスタ/i],['TikTok',/tiktok|ティッ�
  ['テレビ・CM',/テレビ|(^|[^a-zA-Z])cm([^a-zA-Z]|$)/i],['映画館',/映画館|予告/],
  ['ネット広告',/広告/],['スマホアプリ・検索',/スマホアプリ|ChatGPT|検索/i]];
 
+
+/* ---- 挙がった名前の抽出 ---- */
+const NAME_DICT=['美輪明宏','三輪明宏','コムドットやまと','イコールラブ','VIVANT',
+ '堺雅人','阿部寛','竜星涼','乃木坂','ちいかわ','王様のブランチ','恋リア'];
+const NAME_STOP=new Set(['ゲスト','トークショー','インフルエンサー','タレント','アイドル','ドラマ',
+ '俳優','有名人','芸能人','配信者','コムドット','ダントツ','ワークショップ','フォトスポット','イベント',
+ 'インスタ','インスタグラム','ソーシャルメディア','メディア','プリクラ','キャラクター','ピンバッジ',
+ 'トークルーム','カップル','グッズ','プレゼント','ラブストーリー','アカウント','ランキング','サマリー',
+ 'ショック','アンケート','コーナー','リール','ショート','デザイン','インパクト','アルゴリズム',
+ 'ハッシュタグ','コロナ','アウトプット','サイト','リンク','テレビ','スマホ','アプリ','ネット','チラシ',
+ 'ポスター','シェア','ポップコーン','デジタルサイネージ','ショッピングモール','プロモーション',
+ 'リバイバル','バッジ','ブランチ','フォト','スポット','ワーク','ショップ','ラブ','トーク','スピーカー']);
+const RE_KANA=/[ァ-ヴ][ァ-ヴー]{2,}/g;
+const RE_SAN=/([一-龥ヶ][一-龥ぁ-んァ-ヴー]{1,5})さん/g;
+const RE_CAPS=/\b[A-Z][A-Za-z]{2,}\b/g;
+function pickNames(text, full){
+  const out=[];
+  const push=w=>{ w=(w||'').trim();
+    if(w.length>=2 && !NAME_STOP.has(w) && !out.includes(w)) out.push(w); };
+  NAME_DICT.forEach(d=>{ if(text.includes(d)) push(d); });
+  if(full){
+    let m; RE_SAN.lastIndex=0; while((m=RE_SAN.exec(text))) push(m[1]);
+    (text.match(RE_KANA)||[]).forEach(push);
+    (text.match(RE_CAPS)||[]).forEach(push);
+  }
+  return out;
+}
+
 function matchOf(t){
   const res=[];
   CATS.forEach(c=>{
@@ -682,12 +715,27 @@ function renderCat(){
   /* 名前が挙がった人・作品 */
   const infQ = M.free.find(f=>/インフルエンサー|有名人/.test(f.label));
   let names='';
-  if(infQ){
-    const list=P.map(p=>({p,a:p.answers.find(a=>a.label===infQ.label)})).filter(x=>x.a);
-    if(list.length) names=`<div class="box hi">
-      <div class="box-h">🎤 名前が挙がった人・作品 <span class="n">${list.length}名が回答</span></div>
-      ${list.map(x=>`<div class="nm-row"><b>${esc(x.p.name)}</b><span class="fu">${esc(x.p.age||'—')}</span><span class="nm-t">${nl(x.a.text)}</span></div>`).join('')}
-    </div>`;
+  {
+    const rows=[]; const tally=new Map();
+    P.forEach(p=>p.answers.forEach(a=>{
+      const isQ=infQ&&a.label===infQ.label;
+      const found=pickNames(a.text,isQ);
+      if(!isQ&&!found.length) return;
+      rows.push({p,a,isQ,found});
+      found.forEach(w=>{ if(!tally.has(w)) tally.set(w,new Set()); tally.get(w).add(p.name); });
+    }));
+    if(rows.length){
+      const chips=[...tally.entries()].sort((a,b)=>b[1].size-a[1].size)
+        .map(([w,who])=>`<span class="nchip" title="${esc([...who].join('、'))}">${esc(w)}${who.size>1?`<b>${who.size}</b>`:''}</span>`).join('');
+      names=`<div class="box hi">
+        <div class="box-h">🎤 挙がった名前 <span class="n">${tally.size}件</span></div>
+        <div class="nchips">${chips||'<span class="nchip off">まだありません</span>'}</div>
+        ${rows.map(x=>`<div class="nm-row">
+          <b>${esc(x.p.name)}</b>
+          <span class="fu">${esc(x.isQ?(x.p.age||'—'):x.a.label.replace(/^[０-９\d][）)]\s*/,'').slice(0,10)+'…')}</span>
+          <span class="nm-t">${nl(x.a.text)}</span></div>`).join('')}
+      </div>`;
+    }
   }
 
   const cards = ranked.map((b,i)=>{
