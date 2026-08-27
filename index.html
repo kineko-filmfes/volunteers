@@ -121,6 +121,18 @@ td.nm{font-weight:700}
 .todo .t-h{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.04em;margin-bottom:4px}
 .todo .t-who{font-size:13px;font-weight:700}
 .todo .t-txt{font-size:13.5px;white-space:pre-wrap;margin-top:5px}
+.todo .t-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.todo .t-btn{flex:0 0 auto;font-size:12px;font-weight:700;padding:5px 12px;border-radius:999px;
+ border:1px solid var(--line);background:var(--bg);color:var(--muted);cursor:pointer}
+.todo .t-btn:hover{border-color:var(--accent);color:var(--accent)}
+.todo.is-done{border-left-color:var(--line);opacity:.62}
+.todo.is-done .t-h{color:var(--muted)}
+.done-wrap{margin-top:6px}
+.done-wrap summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--muted);
+ padding:9px 2px;list-style:none}
+.done-wrap summary::-webkit-details-marker{display:none}
+.done-wrap summary::before{content:'▸ ';color:var(--muted)}
+.done-wrap[open] summary::before{content:'▾ '}
 .empty{color:var(--muted);font-size:13.5px;padding:18px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);text-align:center}
 
 /* per person */
@@ -541,6 +553,20 @@ function matchOf(t){
   return res.sort((a,b)=>b.score-a.score);
 }
 
+/* ============ 要対応：対応済みの記録 ============ */
+/* 対応済みはこの端末のブラウザに保存する。CSVを入れ直しても消えないよう、
+   保存する目印は「誰の・どの種類の・どの本文か」から作る */
+const DONE_KEY='kineko-todo-done';
+let DONE=new Set();
+try{ DONE=new Set(JSON.parse(localStorage.getItem(DONE_KEY)||'[]')); }catch(e){}
+function saveDone(){ try{ localStorage.setItem(DONE_KEY, JSON.stringify([...DONE])); }catch(e){} }
+function todoId(p,t){
+  const src=p.name+'|'+t.kind+'|'+t.text;
+  let h=5381;
+  for(let i=0;i<src.length;i++) h=((h*33)^src.charCodeAt(i))>>>0;
+  return h.toString(36);
+}
+
 /* ============ 要対応の検出 ============ */
 function todosOf(p){
   const out=[];
@@ -616,15 +642,7 @@ function render(model,label){
 
   /* --- 要対応・全回答（公開版では作らない） --- */
   if(VOL){ applyContact(); return; }
-  const todos=[];
-  P.forEach(p=>todosOf(p).forEach(t=>todos.push({p,t})));
-  document.getElementById('p-todo').innerHTML = todos.length
-    ? todos.map(({p,t})=>`<div class="todo">
-        <div class="t-h">${esc(t.kind)}</div>
-        <div class="t-who">${esc(p.name)}（${esc(p.kana||'—')}）・${esc(p.age||'—')}・${JOIN_LABEL[joinKind(p.join)]}</div>
-        <div class="t-txt">${nl(t.text)}</div>
-      </div>`).join('')
-    : `<div class="empty">いまのところ要対応の項目はありません</div>`;
+  renderTodo();
 
   /* --- 全回答 --- */
   document.getElementById('p-all').innerHTML =
@@ -781,6 +799,34 @@ function renderCat(){
     ${cards}`;
 }
 
+/* ============ 要対応タブ ============ */
+function renderTodo(){
+  const all=[];
+  M.people.forEach(p=>todosOf(p).forEach(t=>all.push({p,t,id:todoId(p,t)})));
+  const open=all.filter(x=>!DONE.has(x.id));
+  const done=all.filter(x=>DONE.has(x.id));
+  const card=(x,isDone)=>`<div class="todo${isDone?' is-done':''}">
+      <div class="t-top">
+        <div>
+          <div class="t-h">${esc(x.t.kind)}</div>
+          <div class="t-who">${esc(x.p.name)}（${esc(x.p.kana||'—')}）・${esc(x.p.age||'—')}・${JOIN_LABEL[joinKind(x.p.join)]}</div>
+        </div>
+        <button class="t-btn" data-done="${x.id}" data-to="${isDone?'0':'1'}">${isDone?'戻す':'対応済みにする'}</button>
+      </div>
+      <div class="t-txt">${nl(x.t.text)}</div>
+    </div>`;
+  document.getElementById('p-todo').innerHTML =
+    (open.length
+      ? open.map(x=>card(x,false)).join('')
+      : `<div class="empty">${all.length?'すべて対応済みです':'いまのところ要対応の項目はありません'}</div>`)
+    + (done.length
+      ? `<details class="done-wrap"><summary>対応済み <b>${done.length}</b>件</summary>
+           ${done.map(x=>card(x,true)).join('')}</details>`
+      : '');
+  const n=document.getElementById('todo-num');
+  if(n) n.textContent=open.length;
+}
+
 /* ============ 冒頭サマリー（ベントーUI） ============ */
 function rankAge(a){
   if(/中学/.test(a)) return 13;
@@ -793,7 +839,8 @@ function renderSummary(P){
   const g={k:[],z:[],x:[],u:[]}; P.forEach(p=>g[joinKind(p.join)].push(p));
   const ages=[...new Set(P.map(p=>p.age||'未回答'))].sort((a,b)=>rankAge(a)-rankAge(b));
   const srcQ=M.free.find(f=>/どこから|知ることが多い|情報を知る/.test(f.label));
-  const todo=P.reduce((s,p)=>s+todosOf(p).length,0);
+  let todo=0;
+  P.forEach(p=>todosOf(p).forEach(t=>{ if(!DONE.has(todoId(p,t))) todo++; }));
   const N=P.length||1;
 
   /* 座席表 */
@@ -855,7 +902,7 @@ function renderSummary(P){
 
       ${VOL?'':`<button class="bt-card b-todo" data-tab="p-todo">
         <div class="bt-h">要対応</div>
-        <div class="bt-num">${todo}</div>
+        <div class="bt-num" id="todo-num">${todo}</div>
       </button>
 
       <div class="bt-card b-ratio">
@@ -879,6 +926,15 @@ function renderSummary(P){
 /* ============ 操作 ============ */
 
 document.addEventListener('click',e=>{
+  const tb=e.target.closest('.t-btn');
+  if(tb){
+    const id=tb.dataset.done;
+    if(tb.dataset.to==='1') DONE.add(id); else DONE.delete(id);
+    saveDone();
+    renderTodo();
+    renderSummary(M.people);
+    return;
+  }
   const chip=e.target.closest('.chip');
   if(chip){ ageFilter=chip.dataset.age||''; renderCat(); return; }
   const bar=e.target.closest('.bar');
