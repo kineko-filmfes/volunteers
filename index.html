@@ -685,11 +685,10 @@ function renderCat(){
 
   const srcQ = M.free.find(f=>/どこから|知ることが多い|情報を知る/.test(f.label));
   const B=new Map(CATS.map(c=>[c.key,{cat:c,voices:[],words:new Map(),people:new Set()}]));
-  const other=[];
   P.forEach(p=>p.answers.forEach(a=>{
     if(srcQ && a.label===srcQ.label) return;
     const m=matchOf(a.text);
-    if(!m.length){ other.push({p,a,tags:[]}); return; }
+    if(!m.length) return;   // テーマ分類なしは出さない（「質問ごと」タブで読める）
     const b=B.get(m[0].cat.key);
     b.voices.push({p,a,tags:m.slice(1).map(x=>x.cat.title)});
     b.people.add(p.n);
@@ -779,9 +778,7 @@ function renderCat(){
       <p class="box-lead" style="margin:12px 0 0">設問２〜５と自由記述。1つの回答は近いテーマ<b>1つだけ</b>に置いています</p>
     </div>
     ${names}
-    ${cards}
-    ${other.length?`<div class="cat"><div class="cat-h"><h3>その他・分類なし</h3><span class="n">${other.length}件</span></div>
-      ${other.map(voice).join('')}</div>`:''}`;
+    ${cards}`;
 }
 
 /* ============ 冒頭サマリー（ベントーUI） ============ */
