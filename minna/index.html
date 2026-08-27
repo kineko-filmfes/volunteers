@@ -15,6 +15,11 @@
   --shadow:0 1px 2px rgba(31,27,22,.05), 0 8px 24px rgba(31,27,22,.06);
   --radius:14px;
 }
+/* ボランティアさん向けの公開版。運営用（クリーム）と取り違えないよう地色を変える。
+   色はキネコの4色のうちの青をごく薄くしたもの */
+body.vol{
+  --bg:#eaf1fa; --line:#d3e0f0;
+}
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#17140f; --panel:#211d17; --ink:#f2ece2; --muted:#a3998b; --line:#352f26;
@@ -22,6 +27,9 @@
     --teal:#5fcdb8; --teal-soft:#12302a;
     --violet:#b39ae8; --violet-soft:#241a3a;
     --amber:#e9b949; --amber-soft:#33260d;
+  }
+  body.vol{
+    --bg:#101720; --panel:#18212c; --line:#27323f;
   }
 }
 *{box-sizing:border-box}
@@ -300,7 +308,7 @@ footer{margin-top:44px;padding-top:18px;border-top:1px solid var(--line);font-si
 }
 </style>
 </head>
-<body>
+<body class="vol">
 <div class="wrap">
 
 <header class="top">
