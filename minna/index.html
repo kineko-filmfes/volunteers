@@ -146,6 +146,7 @@ input[type=search]{
 .bt-h{font-size:13px;font-weight:800;margin-bottom:11px;line-height:1.45}
 .bt-s{display:block;font-size:11px;font-weight:500;color:var(--muted);margin-top:2px}
 .b-seats{grid-column:span 3;grid-row:span 2}
+.bento.solo .b-seats{grid-column:span 4;grid-row:auto}
 .b-todo{grid-column:span 1;background:var(--accent);border-color:var(--accent);color:#fff;cursor:pointer;transition:.15s;
   display:flex;flex-direction:column;justify-content:center}
 .b-todo:hover{transform:translateY(-2px)}
@@ -830,7 +831,7 @@ function renderSummary(P){
       <span class="fr-n">${n}件</span></button>`).join('');
 
   document.getElementById('summary').innerHTML=`
-    <div class="bento">
+    <div class="bento${VOL?' solo':''}">
       <div class="bt-card b-seats">
         <div class="bt-h">${VOL?`回答した${N}名の内訳`:`回答した${N}名の内訳`}</div>
         <div class="seats">${seats}</div>
@@ -857,10 +858,10 @@ function renderSummary(P){
         ${fillRows}
       </div>`}
 
-      <div class="bt-card b-top">
+      ${VOL?'':`<div class="bt-card b-top">
         <div class="bt-h">多く出たアイデア</div>
         ${topRows||'<p class="fr-l">まだアイデアの回答がありません</p>'}
-      </div>
+      </div>`}
     </div>`;
 }
 
